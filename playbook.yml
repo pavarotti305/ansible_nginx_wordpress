@@ -1,0 +1,9 @@
+- hosts: ditelk3
+  become: true
+
+  roles:
+    - mysql
+    - nginx
+    - php7.0
+    - phpmyadmin
+    - wordpress

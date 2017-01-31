@@ -1,0 +1,80 @@
+---
+# tasks file for apache
+  - name: Install MySQL
+    apt: name={{ item }} state=latest force=yes update_cache=yes cache_valid_time=3600
+    with_items:
+      - mysql-server
+      - mysql-client
+      - python-mysqldb
+
+  - name: update root password
+    mysql_user:
+     user="root"
+     password="{{ wp_root_pass }}"
+     host_all=yes
+     login_password="{{ wp_root_pass }}"
+     login_user=root
+     check_implicit_admin=yes
+     priv="*.*:ALL,GRANT"
+
+  - name: Deletes anonymous MySQL server users
+    mysql_user:
+     user=""
+     host_all=yes
+     state=absent
+     login_password={{ wp_root_pass }}
+     login_user=root
+
+  - name: Secures the MySQL root user
+    mysql_user:
+     user="root"
+     password={{ wp_root_pass }}
+     host_all=yes
+     login_password={{ wp_root_pass }}
+     login_user=root
+
+  - name: Removes the MySQL test database and access to it
+    mysql_db:
+     db=test
+     state=absent
+     login_password={{ wp_root_pass }}
+     login_user=root
+    notify:
+      - restart mysql
+
+  - name: Create mysql database for wordpress
+    mysql_db:
+     name={{ wp_db_name }}
+     state=present
+     login_password={{ wp_root_pass }}
+     login_user=root
+
+  - name: Create mysql user
+    mysql_user:
+      name={{ wp_db_user }}
+      password={{ wp_root_pass }}
+      priv=*.*:ALL
+      login_password={{ wp_root_pass }}
+      login_user=root
+    notify:
+      - restart mysql
+
+  - name: Copy database file to temp files for phpmyadmin
+    copy:
+      src: files/create_tables.sql
+      dest: /tmp
+
+  - name: Restore database
+    mysql_db:
+      name=phpmyadmin
+      state=import
+      target=/tmp/create_tables.sql
+      login_password={{ wp_root_pass }}
+      login_user=root
+    notify:
+      - restart mysql
+
+  - name: Start the service at boot
+    service: name={{ item }} state=started enabled=yes
+    with_items:
+      - mysql

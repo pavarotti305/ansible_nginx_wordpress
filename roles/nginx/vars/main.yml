@@ -1,0 +1,8 @@
+---
+# vars file for nginx
+key_file: /etc/nginx/ssl/nginx.key
+cert_file: /etc/nginx/ssl/nginx.crt
+nginx_conf_file: /etc/nginx/nginx.conf
+avail_site_conf_file: /etc/nginx/sites-available/default
+enab_site_conf_file: /etc/nginx/sites-enabled/default
+server_hostname: ditelkin.com

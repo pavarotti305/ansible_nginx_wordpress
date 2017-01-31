@@ -1,0 +1,31 @@
+---
+# tasks file for nginx
+    - name: remove apapche2.
+      apt: name=apapche2 state=absent force=yes
+
+    - name: install nginx.
+      apt: name=nginx state=latest
+
+    - name: Add group "wordpress"
+      group: name=wordpress
+
+    - name: Add user "wordpress"
+      user: name=wordpress group=wordpress home=/home/wordpress/
+
+    - name: Create the directory structure for site.
+      file: path=/var/www/{{ item.0 }}/{{ item.1 }}/{{ item.2 }} owner=wordpress group=wordpress mode=0755 recurse=yes state=directory
+      with_nested:
+        - ['html']
+        - ['ditelkin.com']
+        - ['public_html', 'logs']
+
+    - name: copy nginx config file
+      template: src=templates/nginx.conf dest={{ nginx_conf_file }} owner=root group=root mode=0644
+      notify: restart nginx
+
+    - name: copy default site config file
+      template: src=templates/default_site.conf dest={{ avail_site_conf_file }} owner=root group=root mode=0644
+      notify: restart nginx
+
+    - name: start nginx at boot
+      service: name=nginx state=started enabled=yes

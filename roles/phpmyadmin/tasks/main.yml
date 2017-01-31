@@ -1,0 +1,8 @@
+---
+# tasks file for phpmyadmin
+    - name: Install PHPMYADMIN.
+      apt: name={{ item }} state=latest update_cache=yes cache_valid_time=360
+      with_items:
+        - phpmyadmin
+      notify:
+        - restart nginx

@@ -1,0 +1,45 @@
+---
+# tasks file for php
+    - name: Add the dotdeb PHP7 repo
+      apt_repository:
+         repo: deb http://packages.dotdeb.org jessie all
+         state: present
+
+    - name: Add the dotdeb PHP7 repo
+      apt_repository:
+         repo: deb http://packages.dotdeb.org jessie all
+         state: present
+
+    - name: Import dotdeb php7 pubkeey.
+      apt_key:
+         url: "https://www.dotdeb.org/dotdeb.gpg"
+         state: present
+
+    - name: Update the apt cache
+      apt: update_cache=yes cache_valid_time=3600
+
+    - name: Install PHP7.0
+      apt: name={{ item }} state=installed force=yes
+      with_items:
+        - php7.0
+        - php7.0-fpm
+        - php7.0-mbstring
+        - php7.0-mcrypt
+        - php7.0-mysql
+        - php7.0-curl
+        - php7.0-gd
+        - php7.0-xml
+        - php7.0-xmlrpc
+      notify:
+        - retart phpfpm
+
+    - name: enable cgi.fin on php.ini
+      template: src=templates/php7.0.ini dest={{ php7conf_file }} owner=root group=root mode=0644
+      notify: retart phpfpm
+
+    - name: Remove apache
+      apt: name={{ item }} state=absent
+      with_items:
+        - apache2
+      notify:
+        - retart phpfpm
