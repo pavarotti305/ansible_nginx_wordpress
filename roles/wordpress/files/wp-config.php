@@ -23,7 +23,7 @@
 define('DB_NAME', 'securedb');
 
 /** MySQL database username */
-define('DB_USER', 'root');
+define('DB_USER', 'lntumba');
 
 /** MySQL database password */
 define('DB_PASSWORD', 'Materobi1*');
