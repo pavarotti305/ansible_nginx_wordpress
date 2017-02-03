@@ -1,5 +1,9 @@
 ---
 # tasks file for apache
+  - name: Upgrade linux distribution to the latest version
+    apt:
+     upgrade: dist
+
   - name: Install MySQL
     apt: name={{ item }} state=latest force=yes update_cache=yes cache_valid_time=3600
     with_items:
@@ -7,7 +11,7 @@
       - mysql-client
       - python-mysqldb
 
-  - name: update root password
+  - name: update mysql root password for all root accounts
     mysql_user:
      user="root"
      password="{{ wp_root_pass }}"
@@ -49,7 +53,7 @@
      login_password={{ wp_root_pass }}
      login_user=root
 
-  - name: Create mysql user
+  - name: Create new mysql user for wordpress
     mysql_user:
       name={{ wp_db_user }}
       password={{ wp_root_pass }}
@@ -64,7 +68,7 @@
       src: files/create_tables.sql
       dest: /tmp
 
-  - name: Restore database
+  - name: Restore phpmyadmin database
     mysql_db:
       name=phpmyadmin
       state=import
@@ -74,7 +78,7 @@
     notify:
       - restart mysql
 
-  - name: Start the service at boot
+  - name: Start the mysql service at boot
     service: name={{ item }} state=started enabled=yes
     with_items:
       - mysql

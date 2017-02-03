@@ -6,6 +6,9 @@
     - name: Extract WordPress Archive
       unarchive: src=/tmp/wordpress.tar.gz dest=/var/www/html/ditelkin.com/public_html copy=no
 
+    - name: Install unzip
+      apt: pkg=unzip={{ unzip_version }} state=present
+
     - name: Copy Wordpress config file
       copy:
         src: "{{ item.src }}"
@@ -15,6 +18,18 @@
         mode: 0644
       with_items:
         - { src: "files/wp-config.php", dest: "/var/www/html/ditelkin.com/public_html/wordpress/wp-config.php" }
+      notify:
+        restart nginx
+
+    - name: Copy theme TESSERACT on temp file
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      with_items:
+        - { src: "files/TESSERACT.zip", dest: "/tmp/TESSERACT.zip" }
+
+    - name: Unarchive theme TESSERACT on wp-content file
+      unarchive: src=/tmp/TESSERACT.zip dest=/var/www/html/ditelkin.com/public_html/wordpress/wp-content/themes remote_src=True
       notify:
         restart nginx
 
