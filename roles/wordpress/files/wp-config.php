@@ -23,7 +23,7 @@
 define('DB_NAME', 'securedb');
 
 /** MySQL database username */
-define('DB_USER', 'lntumba');
+define('DB_USER', 'root');
 
 /** MySQL database password */
 define('DB_PASSWORD', 'Materobi1*');
@@ -36,6 +36,9 @@ define('DB_CHARSET', 'utf8');
 
 /** The Database Collate type. Don't change this if in doubt. */
 define('DB_COLLATE', '');
+
+/** Install/Upgrade WordPress plugins without providing FTP access. */
+define('FS_METHOD', 'direct');
 
 /**#@+
  * Authentication Unique Keys and Salts.
