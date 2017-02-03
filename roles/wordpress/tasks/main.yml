@@ -36,8 +36,8 @@
     - name: Make my wordpress content directory tree readable
       file:
         path: "/var/www/html/ditelkin.com/public_html/wordpress/"
-        owner: wordpress
-        group: wordpress
+        owner: www-data
+        group: www-data
         mode: 0755
         recurse: yes
         state: directory

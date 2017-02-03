@@ -10,14 +10,8 @@
     - name: install nginx.
       apt: name=nginx state=latest update_cache=yes
 
-    - name: Add group "wordpress"
-      group: name=wordpress
-
-    - name: Add user "wordpress"
-      user: name=wordpress group=wordpress home=/home/wordpress/
-
     - name: Create the directory structure for site.
-      file: path=/var/www/{{ item.0 }}/{{ item.1 }}/{{ item.2 }} owner=wordpress group=wordpress mode=0755 recurse=yes state=directory
+      file: path=/var/www/{{ item.0 }}/{{ item.1 }}/{{ item.2 }} owner=www-data group=www-data mode=0755 recurse=yes state=directory
       with_nested:
         - ['html']
         - ['ditelkin.com']
