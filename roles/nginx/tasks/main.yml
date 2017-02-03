@@ -11,11 +11,10 @@
       apt: name=nginx state=latest update_cache=yes
 
     - name: Create the directory structure for site.
-      file: path=/var/www/{{ item.0 }}/{{ item.1 }}/{{ item.2 }} owner=www-data group=www-data mode=0755 recurse=yes state=directory
+      file: path=/var/www/{{ item }} owner=www-data group=www-data mode=0755 recurse=yes state=directory
       with_nested:
-        - ['html']
         - ['ditelkin.com']
-        - ['public_html', 'logs']
+
 
     - name: copy nginx config file
       template: src=templates/nginx.conf dest={{ nginx_conf_file }} owner=root group=root mode=0644
